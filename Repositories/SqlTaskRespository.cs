@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using TaskManagerTab.Repositories;
 
 namespace TaskManagerTab.Repositories
@@ -16,7 +17,16 @@ namespace TaskManagerTab.Repositories
         {
             string connectionstring = "Data Source=.\\sqlexpress;Initial Catalog=TaskManagerDB;Integrated Security=True; TrustServerCertificate=True";
             var con = new SqlConnection(connectionstring);
-            var da = new SqlDataAdapter("SELECT * FROM dbo.tasks", con);
+            var da = new SqlDataAdapter(@"
+            SELECT
+                t.TaskID,
+                t.Description,
+                t.Expected_Date,
+                t.Task_Date,
+                t.Expected_Hours,
+                a.AssigneeName
+            FROM Tasks t
+            JOIN Assignees a ON t.AssigneeID = a.AssigneeID", con);
             DataTable dt = new DataTable();
             da.Fill(dt);
             return dt;

@@ -16,6 +16,8 @@ namespace TaskManagerTab
         private readonly ITaskRepository _taskRepo;
 
         const int showLeftPos = 367;
+
+        private int selectedTaskID = -1;
         public frmTaskManager()
         {
             InitializeComponent();
@@ -28,6 +30,8 @@ namespace TaskManagerTab
             dataGridView1.MultiSelect = true; // Allow multiple row selection
 
             dataGridView1.DataBindingComplete += dataGridView1_DataBindingComplete; // Handle DataBindingComplete event to select the last row
+
+            dataGridView1.SelectionChanged += dataGridView1_SelectionChanged; // Handle SelectionChanged event to update the selected row
         }
 
         private void btnShow_Click(object sender, EventArgs e)
@@ -83,6 +87,7 @@ namespace TaskManagerTab
             dataGridView1.Columns["Expected_Hours"].Visible = false;
             dataGridView1.Columns[5].Width = 250;
             dataGridView1.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 10, FontStyle.Bold);
+            comboBoxassigne.DisplayMember = "AssigneeName";
         }
 
         private void dataGridView1_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
@@ -106,6 +111,22 @@ namespace TaskManagerTab
             dataGridView1.ClearSelection();
             dataGridView1.Rows[lastIndex].Selected = true;
             dataGridView1.FirstDisplayedScrollingRowIndex = lastIndex;
+        }
+
+        private void dataGridView1_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dataGridView1.SelectedRows.Count == 0)
+                return;
+            var row = dataGridView1.SelectedRows[0];
+            if (row.Cells["TaskID"].Value == null)
+                return;
+
+            selectedTaskID = Convert.ToInt32(row.Cells["TaskID"].Value);
+            txtdescription.Text = row.Cells["Description"].Value?.ToString() ?? string.Empty;
+            dateTimePickerexpectdate.Value = Convert.ToDateTime(row.Cells["Expected_Date"].Value);
+            comboBoxassigne.Text = row.Cells["AssigneeName"].Value?.ToString() ?? string.Empty;
+            dateTimePickertaskdate.Value = Convert.ToDateTime(row.Cells["Task_Date"].Value);
+            numericUpDownexpechours.Text  = row.Cells["Expected_Hours"].Value?.ToString() ?? string.Empty;
         }
     }
 }

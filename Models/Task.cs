@@ -14,6 +14,8 @@ namespace TaskManagerTab.Models
 
         public DateTime Task_Date { get; set; }
         public string Expected_Hours { get; set; }
-        public string Assigned_To { get; set; }
+        public int AssigneeID { get; set; }
+
+        public string AssigneeName { get; set; }
     }
 }
